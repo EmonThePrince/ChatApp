@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react'
-import { NavLink } from "react-router-dom";
+import { NavLink,Navigate,useNavigate } from "react-router-dom";
 
 function Login() {
     const [password, setPassword] = useState('');
+    const [username, setUsername] = useState('');
+    const navigate = useNavigate();
 
     function hasDigit(str) {
         const digitRegex = /\d/;
@@ -12,6 +14,36 @@ function Login() {
     const handlePasswordChange = (event) => {
         setPassword(event.target.value);
     };
+    const handleUsernameChange = (event) => {
+        setUsername(event.target.value);
+    };
+    const handleLogin = (event) => {
+        event.preventDefault();
+        fetch('http://0.0.0.0:8000/login', {
+          method: 'POST',
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            username: username,
+            password: password,
+          })
+        })
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+          return response.json();
+        })
+        .then((data) => {
+            localStorage.setItem('token',data['token'])
+            navigate('/'); 
+        })
+        .catch((error) => {
+          console.error('Error:', error);
+        });
+      }
 
     const ShouldContainDigit = (!hasDigit(password) && password !== '');
 
@@ -33,8 +65,8 @@ function Login() {
                 <form className="w-full max-w-xl bg-white rounded-lg shadow-md p-6">
                     <div className="flex flex-wrap -mx-3 mb-6">
                         <div className="w-full md:w-full px-3 mb-6">
-                            <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor='email'>Email address</label>
-                            <input className="appearance-none block w-full bg-white text-gray-900 font-medium border border-gray-400 rounded-lg py-3 px-3 leading-tight focus:outline-none" type='email' required />
+                            <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor='Username'>Username</label>
+                            <input className="appearance-none block w-full bg-white text-gray-900 font-medium border border-gray-400 rounded-lg py-3 px-3 leading-tight focus:outline-none" required onChange={handleUsernameChange}/>
                         </div>
                         <div className="w-full md:w-full px-3 mb-4">
                             <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor='Password'>Password</label>
@@ -51,7 +83,7 @@ function Login() {
                             </div>
                         </div>
                         <div className="w-full md:w-full px-3 mb-6">
-                            <button className="appearance-none block w-full bg-blue-600 text-gray-100 font-bold border border-gray-200 rounded-lg py-3 px-3 leading-tight hover:bg-blue-500 focus:outline-none focus:bg-white focus:border-gray-500">Sign in</button>
+                            <button className="appearance-none block w-full bg-blue-600 text-gray-100 font-bold border border-gray-200 rounded-lg py-3 px-3 leading-tight hover:bg-blue-500 focus:outline-none focus:bg-white focus:border-gray-500" onClick={handleLogin}>Sign in</button>
                         </div>
                         <div className="mx-auto -mb-6 pb-1">
                             <span className="text-center text-xs text-gray-700">or sign up with</span>
