@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState,useContext } from 'react'
 import { NavLink,Navigate,useNavigate } from "react-router-dom";
-
+import { UsernameContext } from './usernameContext';
 function Login() {
     const [password, setPassword] = useState('');
-    const [username, setUsername] = useState('');
+    const { username,setUsername } = useContext(UsernameContext);
     const navigate = useNavigate();
 
     function hasDigit(str) {

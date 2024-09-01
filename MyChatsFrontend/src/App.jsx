@@ -1,12 +1,13 @@
-import { useState } from 'react'
 import { Outlet } from 'react-router-dom'
-
+import { UsernameProvider } from './components/usernameContext';
 function App() {
   
 
   return (
     <>
-      <Outlet />
+      <UsernameProvider>
+        <Outlet />
+      </UsernameProvider>
     </>
   )
 }
