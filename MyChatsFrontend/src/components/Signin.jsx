@@ -1,7 +1,9 @@
-import React, { useState } from 'react';
-
+import React, { useState, useContext } from 'react';
+import { UsernameContext } from './usernameContext';
+import { useNavigate } from "react-router-dom";
 function Signin() {
-  const [username, setUsername] = useState('');
+  const navigate = useNavigate();
+  const { username,setUsername } = useContext(UsernameContext);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState(null);
@@ -11,11 +13,35 @@ function Signin() {
     if (!password.match(/\d/)) {
       setError('Password must contain at least one digit');
     } else {
+        fetch('http://0.0.0.0:8000/register', {
+          method: 'POST',
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            username: username,
+            email: email,
+            password: password,
+          })
+        })
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+          return response.json();
+        })
+        .then((data) => {
+            localStorage.setItem('token',data['token'])
+            navigate('/'); 
+        })
+        .catch((error) => {
+          console.error('Error:', error);
+        });
       // TO DO: Implement authentication logic here
       console.log('Submit:', { username, email, password });
     }
   };
-
   return (
     <div className="container mx-auto p-4 pt-6 mt-10 bg-white rounded-lg shadow-md w-1/2">
       <h1 className="text-3xl text-gray-900 leading-tight">Sign In</h1>
