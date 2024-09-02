@@ -38,8 +38,6 @@ function Signin() {
         .catch((error) => {
           console.error('Error:', error);
         });
-      // TO DO: Implement authentication logic here
-      console.log('Submit:', { username, email, password });
     }
   };
   return (

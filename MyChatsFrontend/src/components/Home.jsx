@@ -36,7 +36,7 @@ function Home() {
     }
   }, [token, reciever]);
   useEffect(() => {
-    console.log(username)
+    // console.log(username)
     if (token && reciever && username) {
       const socket = new WebSocket(`ws://0.0.0.0:8000/ws/chat/${username + reciever}/?token=${token}`);
       setSocket(socket);
